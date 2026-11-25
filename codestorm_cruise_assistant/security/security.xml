@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ogni utente vede solo le proprie conversazioni; gli amministratori tutte. -->
+    <record id="rule_conversation_own" model="ir.rule">
+        <field name="name">Cruise Assistant: proprie conversazioni</field>
+        <field name="model_id" ref="model_cruise_assistant_conversation"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_message_own" model="ir.rule">
+        <field name="name">Cruise Assistant: propri messaggi</field>
+        <field name="model_id" ref="model_cruise_assistant_message"/>
+        <field name="domain_force">[('conversation_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_conversation_admin" model="ir.rule">
+        <field name="name">Cruise Assistant: tutte le conversazioni (admin)</field>
+        <field name="model_id" ref="model_cruise_assistant_conversation"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+    <record id="rule_message_admin" model="ir.rule">
+        <field name="name">Cruise Assistant: tutti i messaggi (admin)</field>
+        <field name="model_id" ref="model_cruise_assistant_message"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+</odoo>

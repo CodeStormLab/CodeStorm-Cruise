@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cruise_assistant_conversation_list" model="ir.ui.view">
+        <field name="name">cruise.assistant.conversation.list</field>
+        <field name="model">cruise.assistant.conversation</field>
+        <field name="arch" type="xml">
+            <list create="false">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="create_date"/>
+                <field name="write_date" string="Ultima attività"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_cruise_assistant_conversation_form" model="ir.ui.view">
+        <field name="name">cruise.assistant.conversation.form</field>
+        <field name="model">cruise.assistant.conversation</field>
+        <field name="arch" type="xml">
+            <form create="false">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="user_id" readonly="1"/>
+                    </group>
+                    <field name="message_ids" readonly="1">
+                        <list>
+                            <field name="role"/>
+                            <field name="tool_name" optional="show"/>
+                            <field name="content"/>
+                            <field name="is_error" optional="hide"/>
+                        </list>
+                    </field>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_cruise_assistant_conversation" model="ir.actions.act_window">
+        <field name="name">Conversazioni</field>
+        <field name="res_model">cruise.assistant.conversation</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_cruise_assistant_chat" model="ir.actions.act_url">
+        <field name="name">Chat</field>
+        <field name="url">/cruise_assistant</field>
+        <field name="target">self</field>
+    </record>
+
+    <record id="action_cruise_assistant_home" model="ir.actions.act_url">
+        <field name="name">Home</field>
+        <field name="url">/cruise_assistant/home</field>
+        <field name="target">self</field>
+    </record>
+</odoo>

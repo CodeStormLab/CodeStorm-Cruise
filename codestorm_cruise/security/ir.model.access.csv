@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cruises_user,cruises.user,model_codestorm_cruises,base.group_user,1,1,1,0
+access_cruises_admin,cruises.admin,model_codestorm_cruises,base.group_system,1,1,1,1
+access_cruises_stops_user,cruises.stops.user,model_codestorm_cruises_stops,base.group_user,1,1,1,1
+access_ships_user,ships.user,model_codestorm_ships,base.group_user,1,0,0,0
+access_ships_admin,ships.admin,model_codestorm_ships,base.group_system,1,1,1,1
+access_ports_user,ports.user,model_codestorm_ports,base.group_user,1,0,0,0
+access_ports_admin,ports.admin,model_codestorm_ports,base.group_system,1,1,1,1

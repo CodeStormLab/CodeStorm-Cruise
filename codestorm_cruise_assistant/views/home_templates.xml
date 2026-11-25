@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Pagina iniziale stile portale crociere. I link sono volutamente
+         finti (<a> senza href): l'unico elemento attivo è la casella
+         "Cosa hai in mente?", che apre la chat con il testo come primo
+         messaggio (/cruise_assistant?q=...). -->
+    <template id="home_page" name="Cruise Assistant - Home">
+        <t t-translation="off">&lt;!DOCTYPE html&gt;</t>
+        <html lang="it">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Codestorm Cruise</title>
+                <link rel="icon" href="/codestorm_cruise_assistant/static/description/icon.png"/>
+                <link rel="stylesheet" href="/codestorm_cruise_assistant/static/src/css/home.css?v=3"/>
+            </head>
+            <body>
+                <!-- Barra di servizio -->
+                <div class="hp-topbar">
+                    <div class="hp-wrap">
+                        <span>Prenota con calma: cambi data gratuiti fino a 30 giorni prima della partenza</span>
+                        <nav>
+                            <a>Aiuto</a>
+                            <a>Agenzie</a>
+                            <a>Check-in online</a>
+                            <a>Area personale</a>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Header -->
+                <header class="hp-header">
+                    <div class="hp-wrap">
+                        <a class="hp-logo">
+                            <img src="/codestorm_cruise_assistant/static/description/icon.png" alt=""/>
+                            <span>Codestorm<strong>Cruise</strong></span>
+                        </a>
+                        <nav class="hp-nav">
+                            <a>Crociere</a>
+                            <a>Destinazioni</a>
+                            <a>Offerte</a>
+                            <a>Navi</a>
+                            <a>Esperienze a bordo</a>
+                            <a>Escursioni</a>
+                        </nav>
+                        <a class="hp-phone">&#9742; 800 123 456</a>
+                    </div>
+                </header>
+
+                <!-- Primo banner -->
+                <section class="hp-hero">
+                    <div class="hp-hero-sky"></div>
+                    <svg class="hp-hero-sea" viewBox="0 0 1440 220" preserveAspectRatio="none" aria-hidden="true">
+                        <path d="M0,120 C240,170 480,70 720,110 C960,150 1200,80 1440,120 L1440,220 L0,220 Z" fill="rgba(255,255,255,.18)"/>
+                        <path d="M0,160 C260,120 520,200 760,160 C1000,120 1240,190 1440,150 L1440,220 L0,220 Z" fill="rgba(255,255,255,.28)"/>
+                    </svg>
+                    <div class="hp-wrap hp-hero-content">
+                        <span class="hp-badge">Black Week</span>
+                        <h1>Il mare ti aspetta.<br/>Fino al 40% di sconto.</h1>
+                        <p>Mediterraneo, Nord Europa e Caraibi: bambini gratis e bevande incluse sulle crociere selezionate.</p>
+                        <a class="hp-btn">Scopri le offerte</a>
+                    </div>
+                </section>
+
+                <!-- Casella "Cosa hai in mente?" -->
+                <section class="hp-ask">
+                    <form class="hp-wrap hp-ask-box" id="hp-ask-form" action="/cruise_assistant" method="get">
+                        <label for="hp-ask-input">Cosa hai in mente?</label>
+                        <div class="hp-ask-row">
+                            <textarea id="hp-ask-input" name="q" rows="1" required="required"
+                                      autocomplete="off" autofocus="autofocus"
+                                      placeholder="Es. una crociera di una settimana nel Mediterraneo a giugno"></textarea>
+                            <button type="submit">Chiedi all'assistente</button>
+                        </div>
+                        <small>Premi Invio (Maiusc+Invio per andare a capo): il nostro assistente ti risponde in chat.</small>
+                    </form>
+                </section>
+
+                <main>
+                    <!-- Offerte -->
+                    <section class="hp-section hp-wrap">
+                        <h2>Offerte del momento</h2>
+                        <div class="hp-offers">
+                            <article class="hp-card">
+                                <div class="hp-card-img hp-img-2"><span class="hp-tag">-40%</span></div>
+                                <div class="hp-card-body">
+                                    <small>7 notti · da Savona</small>
+                                    <h3>Mediterraneo Occidentale</h3>
+                                    <p>Marsiglia, Barcellona, Palma, Napoli</p>
+                                    <div class="hp-price"><span>da</span> 549 € <em>a persona</em></div>
+                                    <a class="hp-link">Scopri &#8594;</a>
+                                </div>
+                            </article>
+                            <article class="hp-card">
+                                <div class="hp-card-img hp-img-4"><span class="hp-tag">Bevande incluse</span></div>
+                                <div class="hp-card-body">
+                                    <small>7 notti · da Kiel</small>
+                                    <h3>Fiordi Norvegesi</h3>
+                                    <p>Hellesylt, Geiranger, Bergen, Stavanger</p>
+                                    <div class="hp-price"><span>da</span> 899 € <em>a persona</em></div>
+                                    <a class="hp-link">Scopri &#8594;</a>
+                                </div>
+                            </article>
+                            <article class="hp-card">
+                                <div class="hp-card-img hp-img-3"><span class="hp-tag">Bambini gratis</span></div>
+                                <div class="hp-card-body">
+                                    <small>8 notti · da Guadalupa</small>
+                                    <h3>Caraibi e Antille</h3>
+                                    <p>Martinica, Santa Lucia, Barbados, Antigua</p>
+                                    <div class="hp-price"><span>da</span> 1.090 € <em>a persona</em></div>
+                                    <a class="hp-link">Scopri &#8594;</a>
+                                </div>
+                            </article>
+                            <article class="hp-card">
+                                <div class="hp-card-img hp-img-5"><span class="hp-tag">Novità</span></div>
+                                <div class="hp-card-body">
+                                    <small>7 notti · da Dubai</small>
+                                    <h3>Emirati e Oman</h3>
+                                    <p>Abu Dhabi, Sir Bani Yas, Muscat, Doha</p>
+                                    <div class="hp-price"><span>da</span> 799 € <em>a persona</em></div>
+                                    <a class="hp-link">Scopri &#8594;</a>
+                                </div>
+                            </article>
+                        </div>
+                    </section>
+
+                    <!-- Destinazioni -->
+                    <section class="hp-section hp-wrap">
+                        <h2>Scegli la tua destinazione</h2>
+                        <div class="hp-dest">
+                            <a class="hp-dest-item hp-img-1 hp-dest-big"><span>Mediterraneo</span></a>
+                            <a class="hp-dest-item hp-img-4"><span>Nord Europa</span></a>
+                            <a class="hp-dest-item hp-img-2"><span>Caraibi</span></a>
+                            <a class="hp-dest-item hp-img-5"><span>Emirati Arabi</span></a>
+                            <a class="hp-dest-item hp-img-6"><span>Giro del mondo</span></a>
+                        </div>
+                    </section>
+
+                    <!-- Vantaggi -->
+                    <section class="hp-perks">
+                        <div class="hp-wrap">
+                            <div><b>&#9875;</b><h4>Flotta moderna</h4><p>Navi recenti con cabine con balcone e spa.</p></div>
+                            <div><b>&#127869;</b><h4>Cucina italiana</h4><p>Ristoranti tematici e menu firmati da chef.</p></div>
+                            <div><b>&#128106;</b><h4>Per famiglie</h4><p>Club per bambini e ragazzi in ogni crociera.</p></div>
+                            <div><b>&#127965;</b><h4>Escursioni</h4><p>Oltre 300 esperienze in porto da prenotare.</p></div>
+                        </div>
+                    </section>
+
+                    <!-- Newsletter -->
+                    <section class="hp-news hp-wrap">
+                        <div>
+                            <h2>Non perderti le prossime offerte</h2>
+                            <p>Iscriviti alla newsletter e ricevi in anteprima sconti e novità.</p>
+                        </div>
+                        <div class="hp-news-form">
+                            <input type="email" placeholder="La tua email" disabled="disabled"/>
+                            <a class="hp-btn">Iscriviti</a>
+                        </div>
+                    </section>
+                </main>
+
+                <!-- Footer -->
+                <footer class="hp-footer">
+                    <div class="hp-wrap hp-footer-cols">
+                        <div>
+                            <h5>Crociere</h5>
+                            <a>Mediterraneo</a><a>Nord Europa</a><a>Caraibi</a><a>Giro del mondo</a>
+                        </div>
+                        <div>
+                            <h5>Prenotazione</h5>
+                            <a>Come prenotare</a><a>Documenti di viaggio</a><a>Assicurazione</a><a>Condizioni generali</a>
+                        </div>
+                        <div>
+                            <h5>Azienda</h5>
+                            <a>Chi siamo</a><a>Sostenibilità</a><a>Lavora con noi</a><a>Sala stampa</a>
+                        </div>
+                        <div>
+                            <h5>Assistenza</h5>
+                            <a>Contattaci</a><a>FAQ</a><a>Trova un'agenzia</a><a>Area personale</a>
+                        </div>
+                    </div>
+                    <div class="hp-wrap hp-footer-bottom">
+                        <span>© Codestorm Cruise · Sito dimostrativo</span>
+                        <span><a>Privacy</a> · <a>Cookie</a> · <a>Note legali</a></span>
+                    </div>
+                </footer>
+                <script src="/codestorm_cruise_assistant/static/src/js/home.js?v=2"></script>
+            </body>
+        </html>
+    </template>
+</odoo>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_cruise_assistant_root" name="Cruise Assistant"
+              web_icon="codestorm_cruise_assistant,static/description/icon.png" sequence="60"/>
+    <menuitem id="menu_cruise_assistant_home" name="Home" parent="menu_cruise_assistant_root"
+              action="action_cruise_assistant_home" sequence="5"/>
+    <menuitem id="menu_cruise_assistant_chat" name="Chat" parent="menu_cruise_assistant_root"
+              action="action_cruise_assistant_chat" sequence="10"/>
+    <menuitem id="menu_cruise_assistant_conversations" name="Conversazioni" parent="menu_cruise_assistant_root"
+              action="action_cruise_assistant_conversation" sequence="20"/>
+    <menuitem id="menu_cruise_assistant_settings" name="Configurazione" parent="menu_cruise_assistant_root"
+              action="base_setup.action_general_configuration" groups="base.group_system" sequence="90"/>
+</odoo>

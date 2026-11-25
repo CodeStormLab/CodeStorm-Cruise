@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ships_view_list" model="ir.ui.view">
+        <field name="name">codestorm.ships.list</field>
+        <field name="model">codestorm.ships</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="codice"/>
+                <field name="name"/>
+                <field name="compagnia_id"/>
+                <field name="capacita_passeggeri"/>
+                <field name="stazza_lorda"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="ships_view_form" model="ir.ui.view">
+        <field name="name">codestorm.ships.form</field>
+        <field name="model">codestorm.ships</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Archiviata" bg_color="text-bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <h1><field name="name" placeholder="Nome nave"/></h1>
+                    <group>
+                        <group>
+                            <field name="codice"/>
+                            <field name="compagnia_id"/>
+                            <field name="anno_costruzione"/>
+                        </group>
+                        <group>
+                            <field name="capacita_passeggeri"/>
+                            <field name="stazza_lorda"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Crociere" name="crociere">
+                            <field name="cruise_ids" readonly="1">
+                                <list>
+                                    <field name="codice"/>
+                                    <field name="name"/>
+                                    <field name="data_inizio"/>
+                                    <field name="data_fine"/>
+                                    <field name="stato" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Note" name="note">
+                            <field name="note" placeholder="Note..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="ships_action" model="ir.actions.act_window">
+        <field name="name">Navi</field>
+        <field name="res_model">codestorm.ships</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="ships_menu" name="Navi"
+              parent="cruises_menu_config" action="ships_action" sequence="10"/>
+</odoo>

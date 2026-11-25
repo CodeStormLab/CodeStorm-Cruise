@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="chat_page" name="Cruise Assistant - Chat">
+        <t t-translation="off">&lt;!DOCTYPE html&gt;</t>
+        <html lang="it">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Cruise Assistant</title>
+                <link rel="icon" href="/codestorm_cruise_assistant/static/description/icon.png"/>
+                <link rel="stylesheet" href="/codestorm_cruise_assistant/static/src/css/chat.css?v=4"/>
+            </head>
+            <body>
+                <div class="ca-app">
+                    <aside class="ca-sidebar" id="ca-sidebar">
+                        <div class="ca-sidebar-head">
+                            <a class="ca-back" href="/cruise_assistant/home" title="Torna alla homepage">&#8592; Homepage</a>
+                        </div>
+                        <ul class="ca-conv-list" id="ca-conv-list"></ul>
+                    </aside>
+                    <main class="ca-main">
+                        <header class="ca-header">
+                            <button type="button" class="ca-toggle" id="ca-toggle" aria-label="Conversazioni">&#9776;</button>
+                            <h1 id="ca-title">Cruise Assistant</h1>
+                            <span class="ca-user" t-esc="user_name"/>
+                        </header>
+                        <section class="ca-messages" id="ca-messages">
+                            <div class="ca-empty" id="ca-empty">
+                                <h2>Ciao <t t-esc="user_name"/>!</h2>
+                                <p>Chiedimi qualcosa sui dati di Odoo, ad esempio:</p>
+                                <button type="button" class="ca-suggestion">Quali crociere partono il prossimo mese?</button>
+                                <button type="button" class="ca-suggestion">Elenca le navi con più di 3000 passeggeri</button>
+                                <button type="button" class="ca-suggestion">Quali porti tocca la crociera più lunga?</button>
+                            </div>
+                        </section>
+                        <form class="ca-composer" id="ca-form">
+                            <textarea id="ca-input" rows="1" placeholder="Scrivi un messaggio… (Invio per inviare, Maiusc+Invio per andare a capo)" required="required"></textarea>
+                            <button type="submit" id="ca-send">Invia</button>
+                        </form>
+                    </main>
+                </div>
+                <script src="/codestorm_cruise_assistant/static/src/js/chat.js?v=4"></script>
+            </body>
+        </html>
+    </template>
+</odoo>

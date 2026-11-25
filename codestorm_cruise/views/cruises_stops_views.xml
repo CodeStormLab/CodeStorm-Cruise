@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="cruises_stops_view_list" model="ir.ui.view">
+        <field name="name">codestorm.cruises.stops.list</field>
+        <field name="model">codestorm.cruises.stops</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="cruise_id"/>
+                <field name="port_id"/>
+                <field name="data_arrivo"/>
+                <field name="data_partenza"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="cruises_stops_view_form" model="ir.ui.view">
+        <field name="name">codestorm.cruises.stops.form</field>
+        <field name="model">codestorm.cruises.stops</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="cruise_id"/>
+                            <field name="port_id"/>
+                        </group>
+                        <group>
+                            <field name="data_arrivo"/>
+                            <field name="data_partenza"/>
+                        </group>
+                    </group>
+                    <field name="note" placeholder="Note..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="cruises_stops_view_search" model="ir.ui.view">
+        <field name="name">codestorm.cruises.stops.search</field>
+        <field name="model">codestorm.cruises.stops</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="cruise_id"/>
+                <field name="port_id"/>
+                <group>
+                    <filter name="group_cruise" string="Crociera" context="{'group_by': 'cruise_id'}"/>
+                    <filter name="group_port" string="Porto" context="{'group_by': 'port_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="cruises_stops_action" model="ir.actions.act_window">
+        <field name="name">Tappe</field>
+        <field name="res_model">codestorm.cruises.stops</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="cruises_stops_menu" name="Tappe"
+              parent="cruises_menu_root" action="cruises_stops_action" sequence="20"/>
+</odoo>
