@@ -9,6 +9,7 @@ from ..models.res_config_settings import (
     CRUISE_CARDS_PROMPT, DEFAULT_SYSTEM_PROMPT, PARAM_PREFIX,
 )
 from ..services.agent import AgentError, run_turn
+from ..services.providers import DEFAULT_PROVIDER, PROVIDERS
 
 _logger = logging.getLogger(__name__)
 
@@ -70,8 +71,13 @@ class CruiseAssistantController(http.Controller):
         Conversation = request.env['cruise.assistant.conversation']
         conv = self._conversation(conversation_id) if conversation_id else Conversation
 
+        config = self._config()
+        # Lo storico API ha un formato diverso per ogni provider: se la
+        # conversazione è nata con un altro provider si riparte senza contesto.
+        history = (conv.get_api_history()
+                   if conv and conv.api_provider == config['provider'] else [])
         try:
-            result = run_turn(self._config(), conv.get_api_history() if conv else [], text)
+            result = run_turn(config, history, text)
         except AgentError as e:
             return {'error': str(e)}
         except Exception:
@@ -86,6 +92,7 @@ class CruiseAssistantController(http.Controller):
             + [dict(ev, conversation_id=conv.id) for ev in result.events])
         conv.write({
             'api_history': json.dumps(result.history, ensure_ascii=False, default=str),
+            'api_provider': config['provider'],
         })
         return {
             'conversation': conv.to_summary()[0],
@@ -100,9 +107,12 @@ class CruiseAssistantController(http.Controller):
         def get(key, default=''):
             return icp.get_param(PARAM_PREFIX + key) or default
 
+        provider = get('provider', DEFAULT_PROVIDER)
+        if provider not in PROVIDERS:
+            provider = DEFAULT_PROVIDER
         return {
-            'anthropic_api_key': get('anthropic_api_key'),
-            'model': get('model', 'claude-opus-5-5'),
+            'provider': provider,
+            'model': get('model_' + provider, PROVIDERS[provider]['default_model']),
             'effort': get('effort', 'medium'),
             'mcp_url': get('mcp_url', 'http://localhost:8069/mcp'),
             'mcp_api_key': get('mcp_api_key'),

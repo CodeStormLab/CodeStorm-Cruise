@@ -1,4 +1,8 @@
-from odoo import fields, models
+import os
+
+from odoo import api, fields, models
+
+from ..services.providers import DEFAULT_PROVIDER, PROVIDERS
 
 PARAM_PREFIX = 'codestorm_cruise_assistant.'
 
@@ -43,16 +47,18 @@ sempre in quest'ordine. In ogni passaggio mostra SOLO il blocco di quel passaggi
 attendi la risposta dell'utente prima di passare al successivo.
 
 1. **Crociera** – In base a ciò che l'utente ha chiesto, cerca le crociere con i tool \
-MCP e proponi fino a TRE crociere pertinenti con un blocco `cruises`. Se nessuna è \
-pertinente, proponi le più vicine alla richiesta e dillo. Se l'utente non ha ancora \
-espresso preferenze, proponi tre crociere in partenza a breve.
+MCP e proponi fino a TRE crociere pertinenti con un blocco `cruises`. Se l'utente cerca \
+una destinazione, segui la sezione "Ricerca per destinazione". Se l'utente non ha \
+ancora espresso preferenze, proponi tre crociere in partenza a breve.
 2. **Ospiti** – Quando l'utente sceglie una crociera, conferma la scelta in una riga \
 (puoi citare date e nave) e chiedi quanti ospiti con un blocco `choices` a scelta \
 singola con esattamente queste opzioni: "1 ospite" (👤), "2 ospiti" (👥), \
 "3 ospiti" (👨‍👩‍👦), "4 ospiti" (👨‍👩‍👧‍👦), "Più di 4 ospiti" (🧑‍🤝‍🧑). Se l'utente sceglie \
-"Più di 4 ospiti" o indica più di 4 persone, NON proseguire: rispondi che per gruppi \
-di oltre 4 ospiti un nostro operatore preparerà un'offerta dedicata e invitalo a \
-contattarlo al numero verde 800 123 456 o tramite la sua agenzia di viaggi.
+"Più di 4 ospiti" o indica più di 4 persone, NON proseguire: rispondi che online si \
+possono prenotare al massimo 4 ospiti e che per gruppi più numerosi un nostro operatore \
+preparerà un'offerta dedicata (numero verde 800 123 456 o la sua agenzia di viaggi), \
+poi riproponi lo stesso blocco `choices` degli ospiti, nel caso voglia prenotare per \
+4 persone o meno.
 3. **Cabina** – Blocco `choices` a scelta singola con esattamente: "Cabina con balcone" \
 (🌅, descrizione: "Finestra e balcone privato sul mare"), "Cabina con finestra" \
 (🪟, "Vista mare da una finestra"), "Cabina interna" (🛏️, "Senza finestra, la più \
@@ -67,27 +73,74 @@ Date (se note), Nave (se nota), Ospiti, Cabina, Pacchetti aggiuntivi (o "Nessuno
 Nel campo "note" ricorda che è una demo e i prezzi verranno confermati in fase di \
 prenotazione. Non aggiungere altre domande dopo il riepilogo.
 
+## Ricerca per destinazione
+Le crociere (codestorm.cruises) non hanno un campo destinazione: le destinazioni sono \
+i porti delle tappe. Modelli e campi utili: codestorm.cruises.stops (cruise_id, \
+port_id, data_arrivo, data_partenza) e codestorm.ports (name, citta, country_id). \
+Quando l'utente chiede una destinazione (città, isola, regione o nazione):
+1. Leggi tutti i porti (codestorm.ports, campi name, citta, country_id) e controlla se \
+la destinazione corrisponde a un porto, a una città o alla nazione di un porto.
+2. Se corrisponde, cerca le tappe con quei porti (codestorm.cruises.stops, filtro su \
+port_id) e proponi le crociere che vi fanno scalo.
+3. Se la destinazione NON compare tra i porti, usa le tue conoscenze geografiche per \
+trovare il porto o i porti presenti più vicini alla destinazione richiesta, e proponi \
+le crociere che vi fanno scalo, ordinate dalla più vicina. In una riga di' che la \
+destinazione richiesta non è disponibile e quale porto vicino tocca ciascuna crociera, \
+con una distanza indicativa (es. "Maracaibo non è tra le nostre mete: la più vicina è \
+Cartagena, circa 500 km"). Non rispondere mai solo che non ci sono crociere: proponi \
+sempre almeno la crociera che arriva più vicino.
+Preferisci le crociere non ancora concluse (data_fine assente o futura).
+
+## Domanda in sospeso
+Una domanda con card (passaggi 1-4) resta in sospeso finché l'utente non dà una \
+risposta valida, cliccando una card oppure scrivendola in chat. Vale come risposta \
+anche un testo che corrisponde chiaramente a una delle opzioni (es. "siamo in due" → \
+"2 ospiti", "con balcone" → "Cabina con balcone", "la prima" → la prima crociera \
+proposta). In tutti gli altri casi la domanda NON ha avuto risposta e il tuo messaggio \
+deve terminare riproponendo lo stesso blocco del passaggio in corso:
+- se l'utente ignora la domanda, cambia argomento o fa un'altra domanda: rispondi \
+brevemente e poi riproponi il blocco;
+- se la risposta non è tra quelle previste o non è possibile (es. più di 4 ospiti, \
+una cabina o un pacchetto che non esiste): spiega in una riga perché non è possibile e \
+riproponi il blocco;
+- se la risposta è ambigua: chiedi di scegliere tra le card e riproponi il blocco.
+Riproponi il blocco a ogni messaggio, senza limiti di tentativi, finché la domanda non \
+ha una risposta valida. Al passaggio 1 riproponi le stesse crociere, a meno che \
+l'utente non chieda esplicitamente crociere diverse: in quel caso cerca e proponi le \
+nuove crociere.
+
 Se l'utente cambia idea su un passaggio, aggiorna la scelta e riprendi dal passaggio \
-successivo. È una demo: non creare né modificare record su Odoo per la prenotazione. \
-Per domande che non riguardano la prenotazione rispondi normalmente e poi riproponi \
-il passaggio in corso."""
+successivo. È una demo: non creare né modificare record su Odoo per la prenotazione."""
 
 
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
-    cruise_assistant_anthropic_api_key = fields.Char(
-        'API key Anthropic',
-        config_parameter=PARAM_PREFIX + 'anthropic_api_key',
-        help="Chiave per l'API Claude. Se vuota viene usata la variabile "
-             "d'ambiente ANTHROPIC_API_KEY del container.")
-    cruise_assistant_model = fields.Char(
-        'Modello Claude',
-        config_parameter=PARAM_PREFIX + 'model',
-        default='claude-opus-5-5')
+    cruise_assistant_provider = fields.Selection(
+        [(code, p['label']) for code, p in PROVIDERS.items()],
+        'Provider LLM',
+        config_parameter=PARAM_PREFIX + 'provider',
+        default=DEFAULT_PROVIDER)
+    cruise_assistant_key_status = fields.Char(
+        'API key', compute='_compute_cruise_assistant_key_status')
+    cruise_assistant_model_anthropic = fields.Char(
+        'Modello anthropic',
+        config_parameter=PARAM_PREFIX + 'model_anthropic',
+        default=PROVIDERS['anthropic']['default_model'])
+    cruise_assistant_model_gemini = fields.Char(
+        'Modello gemini',
+        config_parameter=PARAM_PREFIX + 'model_gemini',
+        default=PROVIDERS['gemini']['default_model'])
+    cruise_assistant_model_groq = fields.Char(
+        'Modello groq',
+        config_parameter=PARAM_PREFIX + 'model_groq',
+        default=PROVIDERS['groq']['default_model'])
+    cruise_assistant_model_mistral = fields.Char(
+        'Modello mistral',
+        config_parameter=PARAM_PREFIX + 'model_mistral',
+        default=PROVIDERS['mistral']['default_model'])
     cruise_assistant_effort = fields.Selection(
-        [('low', 'Low'), ('medium', 'Medium'), ('high', 'High'),
-         ('xhigh', 'Extra high'), ('max', 'Max')],
+        [('low', 'Low'), ('medium', 'Medium'), ('high', 'High')],
         'Effort',
         config_parameter=PARAM_PREFIX + 'effort',
         default='medium')
@@ -106,3 +159,15 @@ class ResConfigSettings(models.TransientModel):
         'Istruzioni di sistema',
         config_parameter=PARAM_PREFIX + 'system_prompt',
         default=DEFAULT_SYSTEM_PROMPT)
+
+    @api.depends('cruise_assistant_provider')
+    def _compute_cruise_assistant_key_status(self):
+        for rec in self:
+            info = PROVIDERS.get(rec.cruise_assistant_provider)
+            if not info:
+                rec.cruise_assistant_key_status = ''
+            elif os.environ.get(info['env'], '').strip():
+                rec.cruise_assistant_key_status = f"✔ {info['env']} impostata nel file .env"
+            else:
+                rec.cruise_assistant_key_status = (
+                    f"✘ {info['env']} mancante: impostala nel file .env e ricrea il container")

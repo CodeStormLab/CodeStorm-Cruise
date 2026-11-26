@@ -8,7 +8,7 @@
                 <meta name="viewport" content="width=device-width, initial-scale=1"/>
                 <title>Cruise Assistant</title>
                 <link rel="icon" href="/codestorm_cruise_assistant/static/description/icon.png"/>
-                <link rel="stylesheet" href="/codestorm_cruise_assistant/static/src/css/chat.css?v=4"/>
+                <link rel="stylesheet" href="/codestorm_cruise_assistant/static/src/css/chat.css?v=5"/>
             </head>
             <body>
                 <div class="ca-app">
@@ -39,7 +39,7 @@
                         </form>
                     </main>
                 </div>
-                <script src="/codestorm_cruise_assistant/static/src/js/chat.js?v=4"></script>
+                <script src="/codestorm_cruise_assistant/static/src/js/chat.js?v=5"></script>
             </body>
         </html>
     </template>

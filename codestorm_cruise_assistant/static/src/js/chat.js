@@ -204,21 +204,10 @@
 
     function addMessage(m) {
         els.empty.style.display = "none";
-        let node;
-        if (m.role === "tool") {
-            node = document.createElement("details");
-            node.className = "ca-msg tool" + (m.is_error ? " error" : "");
-            const summary = document.createElement("summary");
-            summary.textContent = (m.is_error ? "⚠ " : "🔧 ") + "Tool MCP: " + m.tool_name;
-            const pre = document.createElement("pre");
-            pre.textContent = m.content;
-            node.append(summary, pre);
-        } else {
-            node = document.createElement("div");
-            node.className = "ca-msg " + m.role + (m.is_error ? " error" : "");
-            if (m.role === "assistant") node.innerHTML = renderMarkdown(m.content);
-            else node.textContent = m.content;
-        }
+        const node = document.createElement("div");
+        node.className = "ca-msg " + m.role + (m.is_error ? " error" : "");
+        if (m.role === "assistant") node.innerHTML = renderMarkdown(m.content);
+        else node.textContent = m.content;
         // Solo l'ultima risposta dell'assistente resta cliccabile: le card
         // dei passaggi precedenti diventano "scadute".
         if (m.role === "assistant" && !m.is_error) {

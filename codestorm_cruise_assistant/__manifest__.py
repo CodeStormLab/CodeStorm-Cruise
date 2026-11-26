@@ -1,19 +1,19 @@
 {
     'name': 'Codestorm Cruise Assistant',
-    'version': '19.0.1.0.0',
-    'summary': 'Chat AI (Claude) collegata al server MCP di Odoo',
+    'version': '19.0.1.2.0',
+    'summary': 'Chat AI (Claude, Gemini, Groq, Mistral) collegata al server MCP di Odoo',
     'description': """
 Assistente conversazionale per Odoo.
 
 * Pagina web di chat su /cruise_assistant
-* Il modello Claude usa i tool esposti dal modulo mcp_server (endpoint /mcp)
+* Il modello LLM scelto nelle impostazioni usa i tool esposti dal modulo mcp_server (endpoint /mcp)
 * Conversazioni salvate per utente
     """,
     'author': 'Codestorm',
     'license': 'LGPL-3',
     'category': 'Productivity',
     'depends': ['base', 'base_setup', 'web', 'mcp_server'],
-    'external_dependencies': {'python': ['anthropic']},
+    'external_dependencies': {'python': ['anthropic', 'google.genai', 'openai']},
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',

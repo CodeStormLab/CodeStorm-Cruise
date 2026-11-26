@@ -8,14 +8,26 @@
         <field name="arch" type="xml">
             <xpath expr="//form" position="inside">
                 <app data-string="Cruise Assistant" string="Cruise Assistant" name="codestorm_cruise_assistant">
-                    <block title="Claude (Anthropic)" name="cruise_assistant_claude">
-                        <setting string="API key Anthropic" help="Se vuota viene usata la variabile d'ambiente ANTHROPIC_API_KEY.">
-                            <field name="cruise_assistant_anthropic_api_key" password="True"/>
+                    <block title="Modello LLM" name="cruise_assistant_llm">
+                        <setting string="Provider" help="LLM a cui vengono inviate le richieste. Le API key si impostano solo nel file .env del progetto: ANTHROPIC_API_KEY, GEMINI_API_KEY, GROQ_API_KEY, MISTRAL_API_KEY.">
+                            <field name="cruise_assistant_provider"/>
+                            <div class="text-muted mt-1">
+                                <field name="cruise_assistant_key_status" readonly="1"/>
+                            </div>
                         </setting>
-                        <setting string="Modello" help="ID del modello Claude, es. claude-opus-5-5">
-                            <field name="cruise_assistant_model"/>
+                        <setting string="Modello" help="ID del modello Claude, es. claude-opus-5-5" invisible="cruise_assistant_provider != 'anthropic'">
+                            <field name="cruise_assistant_model_anthropic"/>
                         </setting>
-                        <setting string="Effort" help="Profondità di ragionamento: più alto = risposte più accurate ma più lente e costose.">
+                        <setting string="Modello" help="ID del modello Gemini, es. gemini-3.8-flash" invisible="cruise_assistant_provider != 'gemini'">
+                            <field name="cruise_assistant_model_gemini"/>
+                        </setting>
+                        <setting string="Modello" help="ID del modello Groq, es. openai/gpt-oss-120b, llama-3.3-70b-versatile" invisible="cruise_assistant_provider != 'groq'">
+                            <field name="cruise_assistant_model_groq"/>
+                        </setting>
+                        <setting string="Modello" help="ID del modello Mistral, es. mistral-large-latest, mistral-small-latest" invisible="cruise_assistant_provider != 'mistral'">
+                            <field name="cruise_assistant_model_mistral"/>
+                        </setting>
+                        <setting string="Effort" help="Profondità di ragionamento: più alto = risposte più accurate ma più lente e costose. Usato da Claude, Gemini e dai modelli gpt-oss su Groq; ignorato dagli altri.">
                             <field name="cruise_assistant_effort"/>
                         </setting>
                         <setting string="Istruzioni di sistema" help="Prompt di sistema dell'assistente.">

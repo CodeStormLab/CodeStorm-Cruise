@@ -14,9 +14,11 @@ class CruiseAssistantConversation(models.Model):
         default=lambda self: self.env.user, ondelete='cascade')
     message_ids = fields.One2many(
         'cruise.assistant.message', 'conversation_id', 'Messaggi')
-    # Trascrizione completa per l'API Claude (blocchi thinking, tool_use,
-    # tool_result...), da rimandare invariata a ogni turno.
+    # Trascrizione completa per l'API del provider LLM (nel formato di quel
+    # provider: blocchi di ragionamento, chiamate ai tool...), da rimandare
+    # invariata a ogni turno.
     api_history = fields.Text('Storico API', default='[]')
+    api_provider = fields.Char('Provider dello storico API')
 
     def get_api_history(self):
         self.ensure_one()
@@ -50,6 +52,9 @@ class CruiseAssistantMessage(models.Model):
 
     @api.model
     def to_client(self, records):
+        # Le chiamate ai tool MCP restano nel backend (per il debug) ma non
+        # vengono mostrate nella chat.
+        records = records.filtered(lambda m: m.role != 'tool')
         return [{
             'id': m.id,
             'role': m.role,
